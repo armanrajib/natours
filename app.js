@@ -58,6 +58,33 @@ app.get('/api/v1/tours/:id', (req, res) => {
   });
 });
 
+app.patch('/api/v1/tours/:id', (req, res) => {
+  const id = Number(req.params.id);
+  const tour = tours.find((el) => el.id === id);
+
+  if (!tour)
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+
+  const updatedTour = { ...tour, ...req.body };
+  const updatedTours = tours.map((el) => (el.id === id ? updatedTour : el));
+
+  fs.writeFile(
+    `${appRoot}/dev-data/data/tours-simple.json`,
+    JSON.stringify(updatedTours),
+    (err) => {
+      res.status(200).json({
+        status: 'success',
+        data: {
+          tour: updatedTour,
+        },
+      });
+    }
+  );
+});
+
 const port = 3000;
 app.listen(port, () => {
   console.log(`App running on port ${port}`);
