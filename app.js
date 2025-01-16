@@ -1,19 +1,26 @@
 import fs from 'fs';
 import express from 'express';
 import appRoot from 'app-root-path';
+import morgan from 'morgan';
 
 const app = express();
 
-// MIDDLEWARE 1: It parses incoming requests with a JSON payload & attaches the resulting JavaScript object to the req.body
+// 1) MIDDLEWARES
+// ===============
+
+// MIDDLEWARE 1
+app.use(morgan('dev'));
+
+// MIDDLEWARE 2: It parses incoming requests with a JSON payload & attaches the resulting JavaScript object to the req.body
 app.use(express.json());
 
-// MIDDLEWARE 2
+// MIDDLEWARE 3
 app.use((req, res, next) => {
   console.log('Hello from the middleware 👋');
   next();
 });
 
-// MIDDLEWARE 3
+// MIDDLEWARE 4
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString(); // Adding a new property to the request object
   next();
@@ -22,6 +29,9 @@ app.use((req, res, next) => {
 const tours = JSON.parse(
   fs.readFileSync(`${appRoot}/dev-data/data/tours-simple.json`)
 );
+
+// 2) ROUTE HANDLERS
+// ==================
 
 const getAllTours = (req, res) => {
   console.log(req.requestTime);
@@ -124,6 +134,9 @@ const deleteTour = (req, res) => {
   );
 };
 
+// 3) ROUTES
+// ==========
+
 // app.get('/api/v1/tours', getAllTours);
 // app.post('/api/v1/tours', createTour);
 // app.get('/api/v1/tours/:id', getTour);
@@ -137,6 +150,9 @@ app
   .get(getTour)
   .patch(updateTour)
   .delete(deleteTour);
+
+// 4) START SERVER
+// ================
 
 const port = 3000;
 app.listen(port, () => {
