@@ -1,5 +1,6 @@
 import express from 'express';
 import morgan from 'morgan';
+import appRoot from 'app-root-path';
 
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
@@ -26,6 +27,9 @@ app.use((req, res, next) => {
   req.requestTime = new Date().toISOString(); // Adding a new property to the request object
   next();
 });
+
+// MIDDLEWARE 5 : Serving static files
+app.use(express.static(`${appRoot}/public`));
 
 // 2) ROUTE HANDLERS
 // ==================
