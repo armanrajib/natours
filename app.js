@@ -1,9 +1,12 @@
 import express from 'express';
 import morgan from 'morgan';
 import appRoot from 'app-root-path';
+import dotenv from 'dotenv';
 
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
+
+dotenv.config({ path: './config.env' });
 
 const app = express();
 
@@ -11,7 +14,9 @@ const app = express();
 // ===============
 
 // MIDDLEWARE 1
-app.use(morgan('dev'));
+if (process.env.NODE_ENV === 'development') {
+  app.use(morgan('dev'));
+}
 
 // MIDDLEWARE 2: It parses incoming requests with a JSON payload & attaches the resulting JavaScript object to the req.body
 app.use(express.json());
