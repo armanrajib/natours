@@ -4,16 +4,31 @@ import appRoot from 'app-root-path';
 
 const app = express();
 
-// MIDDLEWARE to parse the body from JSON to JavaScript Object
+// MIDDLEWARE 1: It parses incoming requests with a JSON payload & attaches the resulting JavaScript object to the req.body
 app.use(express.json());
+
+// MIDDLEWARE 2
+app.use((req, res, next) => {
+  console.log('Hello from the middleware 👋');
+  next();
+});
+
+// MIDDLEWARE 3
+app.use((req, res, next) => {
+  req.requestTime = new Date().toISOString(); // Adding a new property to the request object
+  next();
+});
 
 const tours = JSON.parse(
   fs.readFileSync(`${appRoot}/dev-data/data/tours-simple.json`)
 );
 
 const getAllTours = (req, res) => {
+  console.log(req.requestTime);
+
   res.status(200).json({
     status: 'success',
+    requestedAt: req.requestTime,
     results: tours.length,
     data: {
       tours,
