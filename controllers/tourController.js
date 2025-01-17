@@ -1,8 +1,10 @@
 import fs from 'fs';
 import appRoot from 'app-root-path';
 
+import Tour from '../models/tourModel.js';
+
 const tours = JSON.parse(
-  fs.readFileSync(`${appRoot}/dev-data/data/tours-simple.json`)
+  fs.readFileSync(`${appRoot}/dev-data/data/tours-simple.json`),
 );
 
 // CONTROLLER FOR PARAM MIDDLEWARE
@@ -54,7 +56,7 @@ const createTour = (req, res) => {
           tour: newTour,
         },
       });
-    }
+    },
   );
 };
 
@@ -86,7 +88,7 @@ const updateTour = (req, res) => {
           tour: updatedTour,
         },
       });
-    }
+    },
   );
 };
 
@@ -102,7 +104,7 @@ const deleteTour = (req, res) => {
         status: 'success',
         data: null,
       });
-    }
+    },
   );
 };
 
