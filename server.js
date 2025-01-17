@@ -1,3 +1,4 @@
+import mongoose from 'mongoose';
 import dotenv from 'dotenv';
 
 import app from './app.js';
@@ -6,6 +7,16 @@ dotenv.config({ path: './config.env' });
 
 // console.log(process.env);
 // console.log(app.get('env'));
+
+// DATABASE CONNECTION
+// ====================
+
+const DB = process.env.DATABASE.replace(
+  '<db_password>',
+  process.env.DATABASE_PASSWORD,
+);
+
+mongoose.connect(DB).then(() => console.log('DB connection successful!'));
 
 // 4) START SERVER
 // ================
