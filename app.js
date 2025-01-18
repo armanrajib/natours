@@ -8,6 +8,13 @@ import userRouter from './routes/userRoutes.js';
 import AppError from './utils/appError.js';
 import globalErrorHandler from './controllers/errorController.js';
 
+// UNCAUGHT EXCEPTION HANDLER
+process.on('uncaughtException', (err) => {
+  console.log(err.name, err.message);
+  console.log('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+  process.exit(1);
+});
+
 dotenv.config({ path: './config.env' });
 
 const app = express();
