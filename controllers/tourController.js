@@ -169,6 +169,118 @@ const getTourStats = async (req, res) => {
   }
 };
 
+const getMonthlyPlan = async (req, res) => {
+  try {
+    const year = req.params.year * 1;
+
+    const plan = await Tour.aggregate([
+      // Stage 1: UNWIND
+      {
+        $unwind: '$startDates',
+      },
+
+      // Stage 2: FILTER
+      {
+        $match: {
+          startDates: {
+            $gte: new Date(`${year}-01-01`),
+            $lte: new Date(`${year}-12-31`),
+          },
+        },
+      },
+
+      // Stage 3: GROUP
+      {
+        $group: {
+          _id: { $month: '$startDates' },
+          numTourStarts: { $sum: 1 },
+          tours: { $push: '$name' },
+        },
+      },
+
+      // Stage 4: ADD FIELDS
+      {
+        // $addFields: { month: '$_id', year: year },
+
+        // $addFields: {
+        //   year: year,
+        //   month: {
+        //     $arrayElemAt: [
+        //       [
+        //         '',
+        //         'January',
+        //         'February',
+        //         'March',
+        //         'April',
+        //         'May',
+        //         'June',
+        //         'July',
+        //         'August',
+        //         'September',
+        //         'October',
+        //         'November',
+        //         'December',
+        //       ],
+        //       '$_id',
+        //     ],
+        //   },
+        // },
+
+        $addFields: {
+          year: year,
+          month: {
+            $switch: {
+              branches: [
+                { case: { $eq: ['$_id', 1] }, then: 'January' },
+                { case: { $eq: ['$_id', 2] }, then: 'February' },
+                { case: { $eq: ['$_id', 3] }, then: 'March' },
+                { case: { $eq: ['$_id', 4] }, then: 'April' },
+                { case: { $eq: ['$_id', 5] }, then: 'May' },
+                { case: { $eq: ['$_id', 6] }, then: 'June' },
+                { case: { $eq: ['$_id', 7] }, then: 'July' },
+                { case: { $eq: ['$_id', 8] }, then: 'August' },
+                { case: { $eq: ['$_id', 9] }, then: 'September' },
+                { case: { $eq: ['$_id', 10] }, then: 'October' },
+                { case: { $eq: ['$_id', 11] }, then: 'November' },
+                { case: { $eq: ['$_id', 12] }, then: 'December' },
+              ],
+              default: 'Unknown month',
+            },
+          },
+        },
+      },
+
+      // Stage 5: PROJECT
+      {
+        $project: { _id: 0 },
+      },
+
+      // Stage 6: SORT
+      {
+        $sort: { numTourStarts: -1 },
+      },
+
+      // Stage 7: LIMIT
+      {
+        $limit: 12,
+      },
+    ]);
+
+    res.status(200).json({
+      status: 'success',
+      results: plan.length,
+      data: {
+        plan,
+      },
+    });
+  } catch (err) {
+    res.status(404).json({
+      status: 'fail',
+      message: err,
+    });
+  }
+};
+
 export {
   getAllTours,
   createTour,
@@ -177,4 +289,5 @@ export {
   deleteTour,
   aliasTopTours,
   getTourStats,
+  getMonthlyPlan,
 };
