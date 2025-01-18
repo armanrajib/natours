@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "nodemon server.js",
     "prod": "NODE_ENV=production nodemon server.js",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "debug": "ndb server.js"
   },
   "author": "Arman Rajib",
   "license": "ISC",
@@ -26,6 +27,7 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-prettier": "^5.2.2",
     "eslint-plugin-react": "^7.37.4",
+    "ndb": "^1.1.5",
     "nodemon": "^3.1.9",
     "prettier": "^3.4.2"
   },
