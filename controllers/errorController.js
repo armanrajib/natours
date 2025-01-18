@@ -1,3 +1,10 @@
+import AppError from '../utils/appError.js';
+
+const handleCastErrorDB = (err) => {
+  const message = `Invalid ${err.path}: ${err.value}.`;
+  return new AppError(message, 400);
+};
+
 const sendErrorDev = (err, req, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -35,7 +42,14 @@ const globalErrorHandler = (err, req, res, next) => {
   if (process.env.NODE_ENV === 'development') {
     sendErrorDev(err, req, res);
   } else if (process.env.NODE_ENV === 'production') {
-    sendErrorProd(err, req, res);
+    let error = { ...err };
+
+    // if (error.name === 'CastError') { // In error object, name is not present
+    if (error.kind === 'ObjectId') {
+      error = handleCastErrorDB(error);
+    }
+
+    sendErrorProd(error, req, res);
   }
 };
 
