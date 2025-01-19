@@ -17,6 +17,14 @@ const handleValidationErrorDB = (err) => {
   return new AppError(message, 400);
 };
 
+const handleJWTError = () => {
+  return new AppError('Invalid token. Please log in again!', 401);
+};
+
+const handleJWTExpiredError = () => {
+  return new AppError('Your token has expired! Please log in again.', 401);
+};
+
 const sendErrorDev = (err, req, res) => {
   res.status(err.statusCode).json({
     status: err.status,
@@ -68,6 +76,16 @@ const globalErrorHandler = (err, req, res, next) => {
     // if (error.name === 'ValidationError') { // In error object, name is not present
     if (error._message === 'Tour validation failed') {
       error = handleValidationErrorDB(error);
+    }
+
+    // JsonWebTokenError
+    if (error.name === 'JsonWebTokenError') {
+      error = handleJWTError(error);
+    }
+
+    // TokenExpiredError
+    if (error.name === 'TokenExpiredError') {
+      error = handleJWTExpiredError(error);
     }
 
     sendErrorProd(error, req, res);
