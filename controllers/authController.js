@@ -4,6 +4,7 @@ import { promisify } from 'util';
 import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import sendEmail from '../utils/email.js';
 
 // HELPER FUNCTIONS
 // =================
@@ -130,4 +131,48 @@ const restrictTo = (...roles) => {
   };
 };
 
-export { signup, login, protect, restrictTo };
+// FORGOT & RESET PASSWORD CONTROLLERS
+// ====================================
+
+const forgotPassword = catchAsync(async (req, res, next) => {
+  // 1) Get user based on POSTed email
+  const user = await User.findOne({ email: req.body.email });
+
+  if (!user) {
+    return next(new AppError('There is no user with email address.', 404));
+  }
+
+  // 2) Generate the random reset token
+  const resetToken = user.createPasswordResetToken();
+  user.save({ validateBeforeSave: false });
+
+  // 3) Send it to user's email
+  const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetpassword/${resetToken}`;
+  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email!`;
+
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: 'Your password reset token (valid for 10 min)',
+      message,
+    });
+  } catch (err) {
+    user.passwordResetToken = undefined;
+    user.passwordResetExpires = undefined;
+    await user.save({ validateBeforeSave: false });
+
+    return next(
+      new AppError('There was an error sending the email. Try again later!'),
+      500,
+    );
+  }
+
+  res.status(200).json({
+    status: 'success',
+    message: 'Token sent to email!',
+  });
+});
+
+const resetPassword = catchAsync(async (req, res, next) => {});
+
+export { signup, login, protect, restrictTo, forgotPassword, resetPassword };
