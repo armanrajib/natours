@@ -6,6 +6,7 @@ import { rateLimit } from 'express-rate-limit';
 import helmet from 'helmet';
 import mongoSanitize from 'express-mongo-sanitize';
 import xssClean from 'xss-clean';
+import hpp from 'hpp';
 
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
@@ -53,6 +54,20 @@ app.use(mongoSanitize());
 
 // ANOTHER MIDDLEWARE (DATA SANITIZATION AGAINST XSS) - MONGODB
 app.use(xssClean());
+
+// ANOTHER MIDDLEWARE (PREVENT PARAMETER POLLUTION) - MONGODB
+app.use(
+  hpp({
+    whitelist: [
+      'duration',
+      'ratingsQuantity',
+      'ratingsAverage',
+      'maxGroupSize',
+      'difficulty',
+      'price',
+    ],
+  }),
+);
 
 // MIDDLEWARE 3
 app.use((req, res, next) => {
