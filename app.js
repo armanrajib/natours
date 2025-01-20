@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import appRoot from 'app-root-path';
 import dotenv from 'dotenv';
 import { rateLimit } from 'express-rate-limit';
+import helmet from 'helmet';
 
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
@@ -23,6 +24,9 @@ const app = express();
 // 1) MIDDLEWARES
 // ===============
 
+// ANOTHER MIDDLEWARE (SET SECURITY HTTP HEADERS) - HELMET
+app.use(helmet());
+
 // MIDDLEWARE 1
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
@@ -30,7 +34,7 @@ if (process.env.NODE_ENV === 'development') {
 
 // ANOTHER MIDDLEWARE (RATE LIMITER)
 const limiter = rateLimit({
-  limit: 2,
+  limit: 100,
   windowMs: 60 * 60 * 1000,
   message: {
     error: 'Too many requests from this IP, please try again in an hour!',
@@ -40,7 +44,7 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 // MIDDLEWARE 2: It parses incoming requests with a JSON payload & attaches the resulting JavaScript object to the req.body
-app.use(express.json());
+app.use(express.json({ limit: '10kb' })); // body more than 10kb will be rejected
 
 // MIDDLEWARE 3
 app.use((req, res, next) => {
