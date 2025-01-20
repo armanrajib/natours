@@ -2,6 +2,7 @@ import express from 'express';
 import morgan from 'morgan';
 import appRoot from 'app-root-path';
 import dotenv from 'dotenv';
+import { rateLimit } from 'express-rate-limit';
 
 import tourRouter from './routes/tourRoutes.js';
 import userRouter from './routes/userRoutes.js';
@@ -26,6 +27,17 @@ const app = express();
 if (process.env.NODE_ENV === 'development') {
   app.use(morgan('dev'));
 }
+
+// ANOTHER MIDDLEWARE (RATE LIMITER)
+const limiter = rateLimit({
+  limit: 2,
+  windowMs: 60 * 60 * 1000,
+  message: {
+    error: 'Too many requests from this IP, please try again in an hour!',
+  },
+});
+
+app.use('/api', limiter);
 
 // MIDDLEWARE 2: It parses incoming requests with a JSON payload & attaches the resulting JavaScript object to the req.body
 app.use(express.json());
