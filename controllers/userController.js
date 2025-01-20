@@ -58,6 +58,16 @@ const updateMe = catchAsync(async (req, res, next) => {
   });
 });
 
+// delete means deactivate the account => {active: false}
+const deleteMe = catchAsync(async (req, res, next) => {
+  await User.findByIdAndUpdate(req.user.id, { active: false });
+
+  res.status(204).json({
+    status: 'success',
+    data: null,
+  });
+});
+
 const createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
@@ -86,4 +96,12 @@ const deleteUser = (req, res) => {
   });
 };
 
-export { getAllUsers, createUser, getUser, updateUser, deleteUser, updateMe };
+export {
+  getAllUsers,
+  createUser,
+  getUser,
+  updateUser,
+  deleteUser,
+  updateMe,
+  deleteMe,
+};
