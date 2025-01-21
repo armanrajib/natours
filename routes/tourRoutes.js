@@ -11,7 +11,9 @@ import {
   getMonthlyPlan,
 } from '../controllers/tourController.js';
 import { protect, restrictTo } from '../controllers/authController.js';
-import { createReview } from '../controllers/reviewController.js';
+
+// import { createReview } from '../controllers/reviewController.js';
+import reviewRouter from './reviewRoutes.js';
 
 const router = express.Router();
 
@@ -31,8 +33,10 @@ router
 // GET /tour/234fad4/reviews
 // GET /tour/234fad4/reviews/9483fjd
 
-router
-  .route('/:tourId/reviews')
-  .post(protect, restrictTo('user'), createReview);
+// router
+//   .route('/:tourId/reviews')
+//   .post(protect, restrictTo('user'), createReview);
+
+router.use('/:tourId/reviews', reviewRouter);
 
 export default router;
