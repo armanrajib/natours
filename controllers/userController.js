@@ -1,7 +1,7 @@
 import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
-import { updateOne, deleteOne } from './handlerFactory.js';
+import { getOne, updateOne, deleteOne } from './handlerFactory.js';
 
 // HELPER FUNCTIONS
 // =================
@@ -72,16 +72,11 @@ const deleteMe = catchAsync(async (req, res, next) => {
 const createUser = (req, res) => {
   res.status(500).json({
     status: 'error',
-    message: 'This route is not yet defined',
+    message: 'This route is not defined! Please use /signup instead',
   });
 };
 
-const getUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+const getUser = getOne(User);
 
 const updateUser = updateOne(User); // Don't update passwords with this controller
 

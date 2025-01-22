@@ -17,6 +17,25 @@ const createOne = (Model) => {
   });
 };
 
+const getOne = (Model, populateOptions) => {
+  return catchAsync(async (req, res, next) => {
+    let query = Model.findById(req.params.id);
+
+    if (populateOptions) query = query.populate(populateOptions);
+
+    const doc = await query;
+
+    if (!doc) return next(new AppError('No document found with that ID', 404));
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        data: doc,
+      },
+    });
+  });
+};
+
 const updateOne = (Model) => {
   return catchAsync(async (req, res, next) => {
     const updatedDoc = await Model.findByIdAndUpdate(req.params.id, req.body, {
@@ -49,4 +68,4 @@ const deleteOne = (Model) => {
   });
 };
 
-export { createOne, updateOne, deleteOne };
+export { getOne, createOne, updateOne, deleteOne };
