@@ -25,6 +25,12 @@ dotenv.config({ path: './config.env' });
 
 const app = express();
 
+// SETTING UP PUG
+// ===============
+
+app.set('view engine', 'pug');
+app.set('views', `${appRoot}/views`);
+
 // 1) MIDDLEWARES
 // ===============
 
@@ -92,6 +98,16 @@ app.use(express.static(`${appRoot}/public`));
 
 // 3) ROUTES
 // ==========
+
+// WEB ROUTES
+// -----------
+
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
+
+// API ROUTES
+// -----------
 
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/users', userRouter);
