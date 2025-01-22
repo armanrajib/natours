@@ -14,6 +14,7 @@ import {
   signup,
   login,
   protect,
+  restrictTo,
   forgotPassword,
   resetPassword,
   updatePassword,
@@ -26,11 +27,18 @@ router.route('/login').post(login);
 
 router.route('/forgotpassword').post(forgotPassword);
 router.route('/resetpassword/:token').patch(resetPassword);
-router.route('/updatemypassword').patch(protect, updatePassword);
 
-router.route('/me').get(protect, getMe, getUser);
-router.route('/updateme').patch(protect, updateMe);
-router.route('/deleteme').delete(protect, deleteMe);
+// Protect all routes after this middleware
+router.use(protect);
+
+router.route('/updatemypassword').patch(updatePassword);
+
+router.route('/me').get(getMe, getUser);
+router.route('/updateme').patch(updateMe);
+router.route('/deleteme').delete(deleteMe);
+
+// Restrict all routes after this middleware to admin only
+router.use(restrictTo('admin'));
 
 router.route('/').get(getAllUsers).post(createUser);
 router.route('/:id').get(getUser).patch(updateUser).delete(deleteUser);
