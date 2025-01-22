@@ -16,7 +16,7 @@ const getAll = (Model) => {
     if (req.params.tourId) filter = { tour: req.params.tourId };
 
     // BUILD QUERY THROUGH APIFeatures CLASS
-    const features = new APIFeatures(Model.find(), req.query)
+    const features = new APIFeatures(Model.find(filter), req.query) // filter wasn't used before [FIXED]
       .filter()
       .sort()
       .limitFields()
