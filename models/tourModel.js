@@ -120,6 +120,14 @@ const tourSchema = new mongoose.Schema(
   },
 );
 
+// INDEXES
+// --------
+
+// tourSchema.index({ price: 1 });
+// tourSchema.index({ ratingsAverage: -1 });
+tourSchema.index({ price: 1, ratingsAverage: -1 }); // Compound index
+tourSchema.index({ slug: 1 });
+
 // Virtual properties can't be used in queries because they are not stored in the database
 // Can't use arrow function here because we need 'this' keyword
 
