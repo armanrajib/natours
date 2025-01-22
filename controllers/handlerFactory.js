@@ -1,6 +1,22 @@
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
 
+// FACTORY HANDLERS
+// =================
+
+const createOne = (Model) => {
+  return catchAsync(async (req, res, next) => {
+    const newDoc = await Model.create(req.body);
+
+    res.status(201).json({
+      status: 'success',
+      data: {
+        data: newDoc,
+      },
+    });
+  });
+};
+
 const updateOne = (Model) => {
   return catchAsync(async (req, res, next) => {
     const updatedDoc = await Model.findByIdAndUpdate(req.params.id, req.body, {
@@ -33,4 +49,4 @@ const deleteOne = (Model) => {
   });
 };
 
-export { updateOne, deleteOne };
+export { createOne, updateOne, deleteOne };

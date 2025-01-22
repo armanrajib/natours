@@ -2,7 +2,7 @@ import Tour from '../models/tourModel.js';
 import APIFeatures from '../utils/apiFeatures.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
-import { updateOne, deleteOne } from './handlerFactory.js';
+import { createOne, updateOne, deleteOne } from './handlerFactory.js';
 
 // MIDDLEWARES
 // ============
@@ -42,16 +42,7 @@ const getAllTours = catchAsync(async (req, res, next) => {
   });
 });
 
-const createTour = catchAsync(async (req, res, next) => {
-  const newTour = await Tour.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      tour: newTour,
-    },
-  });
-});
+const createTour = createOne(Tour);
 
 const getTour = catchAsync(async (req, res, next) => {
   // const tour = await Tour.findOne({ _id: req.params.id });

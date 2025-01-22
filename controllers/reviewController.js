@@ -1,6 +1,6 @@
 import Review from '../models/reviewModel.js';
 import catchAsync from '../utils/catchAsync.js';
-import { updateOne, deleteOne } from './handlerFactory.js';
+import { createOne, updateOne, deleteOne } from './handlerFactory.js';
 
 // CONTROLLERS
 // ============
@@ -21,23 +21,25 @@ const getAllReviews = catchAsync(async (req, res, next) => {
   });
 });
 
-const createReview = catchAsync(async (req, res, next) => {
+// SET [TOUR ID] IN THE BODY FOR [SPECIFIC TOUR] AND [AND USER ID] FOR [AUTHENTICATED USER]
+const setTourUserIds = (req, res, next) => {
   // Allow nested routes
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user.id;
 
-  const newReview = await Review.create(req.body);
+  next();
+};
 
-  res.status(201).json({
-    status: 'success',
-    data: {
-      review: newReview,
-    },
-  });
-});
+const createReview = createOne(Review);
 
 const updateReview = updateOne(Review);
 
 const deleteReview = deleteOne(Review);
 
-export { getAllReviews, createReview, updateReview, deleteReview };
+export {
+  getAllReviews,
+  createReview,
+  updateReview,
+  deleteReview,
+  setTourUserIds,
+};
