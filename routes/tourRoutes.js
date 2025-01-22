@@ -9,6 +9,7 @@ import {
   aliasTopTours,
   getTourStats,
   getMonthlyPlan,
+  getToursWithin,
 } from '../controllers/tourController.js';
 import { protect, restrictTo } from '../controllers/authController.js';
 
@@ -24,6 +25,11 @@ router.route('/tour-stats').get(getTourStats);
 router
   .route('/monthly-plan/:year')
   .get(protect, restrictTo('admin', 'lead-guide', 'guide'), getMonthlyPlan);
+
+// /tours-within/233/center/34.111745,-118.113491/unit/mi
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(getToursWithin);
 
 router
   .route('/')
