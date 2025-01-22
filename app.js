@@ -103,7 +103,10 @@ app.use(express.static(`${appRoot}/public`));
 // -----------
 
 app.get('/', (req, res) => {
-  res.status(200).render('base');
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Arman Rajib',
+  });
 });
 
 // API ROUTES
