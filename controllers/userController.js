@@ -1,6 +1,7 @@
 import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import { deleteOne } from './handlerFactory.js';
 
 // HELPER FUNCTIONS
 // =================
@@ -89,12 +90,7 @@ const updateUser = (req, res) => {
   });
 };
 
-const deleteUser = (req, res) => {
-  res.status(500).json({
-    status: 'error',
-    message: 'This route is not yet defined',
-  });
-};
+const deleteUser = deleteOne(User);
 
 export {
   getAllUsers,
