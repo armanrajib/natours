@@ -1,7 +1,7 @@
 import User from '../models/userModel.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
-import { getOne, updateOne, deleteOne } from './handlerFactory.js';
+import { getAll, getOne, updateOne, deleteOne } from './handlerFactory.js';
 
 // HELPER FUNCTIONS
 // =================
@@ -19,17 +19,7 @@ const filterObj = (obj, ...allowedFields) => {
 // CONTROLLERS
 // ============
 
-const getAllUsers = catchAsync(async (req, res, next) => {
-  const users = await User.find();
-
-  res.status(200).json({
-    status: 'success',
-    results: users.length,
-    data: {
-      users,
-    },
-  });
-});
+const getAllUsers = getAll(User);
 
 const updateMe = catchAsync(async (req, res, next) => {
   // 1) Create error if user POSTs password data

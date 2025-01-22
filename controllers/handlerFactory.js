@@ -1,8 +1,41 @@
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
+import APIFeatures from '../utils/apiFeatures.js';
 
 // FACTORY HANDLERS
 // =================
+
+const getAll = (Model) => {
+  return catchAsync(async (req, res, next) => {
+    console.log(req.requestTime);
+    console.log('req.query:', req.query);
+
+    // To allow for nested GET reviews on tour (hack) [GET /tours/:tourId/reviews]
+    // Only [getAllReviews] controller receives [tourId] in the params
+    let filter = {};
+    if (req.params.tourId) filter = { tour: req.params.tourId };
+
+    // BUILD QUERY THROUGH APIFeatures CLASS
+    const features = new APIFeatures(Model.find(), req.query)
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
+
+    // EXECUTE QUERY
+    const docs = await features.query;
+
+    // SEND RESPONSE
+    res.status(200).json({
+      status: 'success',
+      requestedAt: req.requestTime,
+      results: docs.length,
+      data: {
+        data: docs,
+      },
+    });
+  });
+};
 
 const createOne = (Model) => {
   return catchAsync(async (req, res, next) => {
@@ -68,4 +101,4 @@ const deleteOne = (Model) => {
   });
 };
 
-export { getOne, createOne, updateOne, deleteOne };
+export { getAll, createOne, getOne, updateOne, deleteOne };

@@ -2,7 +2,13 @@ import Tour from '../models/tourModel.js';
 import APIFeatures from '../utils/apiFeatures.js';
 import catchAsync from '../utils/catchAsync.js';
 import AppError from '../utils/appError.js';
-import { createOne, getOne, updateOne, deleteOne } from './handlerFactory.js';
+import {
+  getAll,
+  createOne,
+  getOne,
+  updateOne,
+  deleteOne,
+} from './handlerFactory.js';
 
 // MIDDLEWARES
 // ============
@@ -17,30 +23,7 @@ const aliasTopTours = (req, res, next) => {
 // CONTROLLERS
 // ============
 
-const getAllTours = catchAsync(async (req, res, next) => {
-  console.log(req.requestTime);
-  console.log('req.query:', req.query);
-
-  // BUILD QUERY THROUGH APIFeatures CLASS
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-
-  // EXECUTE QUERY
-  const tours = await features.query;
-
-  // SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    requestedAt: req.requestTime,
-    results: tours.length,
-    data: {
-      tours,
-    },
-  });
-});
+const getAllTours = getAll(Tour);
 
 const createTour = createOne(Tour);
 
