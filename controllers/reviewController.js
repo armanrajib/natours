@@ -1,6 +1,6 @@
 import Review from '../models/reviewModel.js';
 import catchAsync from '../utils/catchAsync.js';
-import { deleteOne } from './handlerFactory.js';
+import { updateOne, deleteOne } from './handlerFactory.js';
 
 // CONTROLLERS
 // ============
@@ -36,6 +36,8 @@ const createReview = catchAsync(async (req, res, next) => {
   });
 });
 
+const updateReview = updateOne(Review);
+
 const deleteReview = deleteOne(Review);
 
-export { getAllReviews, createReview, deleteReview };
+export { getAllReviews, createReview, updateReview, deleteReview };
