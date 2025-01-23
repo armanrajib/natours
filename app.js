@@ -104,8 +104,21 @@ app.use(express.static(`${appRoot}/public`));
 
 app.get('/', (req, res) => {
   res.status(200).render('base', {
+    title: 'Exciting Tours for Adventurous People',
     tour: 'The Forest Hiker',
     user: 'Arman Rajib',
+  });
+});
+
+app.get('/overview', (req, res) => {
+  res.status(200).render('overview', {
+    title: 'All Tours',
+  });
+});
+
+app.get('/tour', (req, res) => {
+  res.status(200).render('tour', {
+    title: 'The Forest Hiker Tour',
   });
 });
 
