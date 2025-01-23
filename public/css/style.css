@@ -540,7 +540,7 @@ body {
 
 .section-map {
   position: relative;
-  height: 65rem;
+  height: 55rem;
   margin-top: calc(0px - var(--section-rotate));
 }
 
@@ -549,6 +549,18 @@ body {
   top: 0;
   bottom: 0;
   width: 100%;
+}
+
+.map-unavailable {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+  font-size: 3.5rem;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: #55c57a;
 }
 
 .marker {
